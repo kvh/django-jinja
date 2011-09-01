@@ -1,11 +1,18 @@
 # -*- encoding:utf-8 -*-
 
-from jinja2 import nodes
+from jinja2 import nodes, contextfilter
 from jinja2.ext import Extension
 from jinja2.exceptions import TemplateSyntaxError
 from jinja2 import Markup
 from django.conf import settings
 
+@contextfilter
+def update_querystring(ctx, curr_url, **kwargs):
+        query_dict = ctx['request'].GET.copy() 
+        for k, v in kwargs.items():
+            query_dict[k] = v
+        url = "%s?%s"%(curr_url, query_dict.urlencode())
+        return url
 
 class LoadExtension(Extension):
     """The load-tag is a no-op in Coffin. Instead, all template libraries

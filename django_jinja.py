@@ -56,7 +56,7 @@ class Loader(BaseLoader):
         )
     )
     env.template_class = Template
-    
+    env.filters['update_querystring'] = update_querystring
     # These are available to all templates.
     env.globals['url_for'] = urlresolvers.reverse
     env.globals['MEDIA_URL'] = settings.MEDIA_URL
