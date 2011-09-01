@@ -42,6 +42,8 @@ def guess_autoescape(template_name):
         return False
     ext = template_name.rsplit('.', 1)[1]
     return ext in ('html', 'htm', 'xml', 'haml')
+    
+
 
 class Loader(BaseLoader):
     """
@@ -53,7 +55,7 @@ class Loader(BaseLoader):
     
     # Set up the jinja env and load any extensions you may have
     env = jinja2.Environment(
-        autoescape=guess_autoescape,
+        autoescape=guess_autoescape if settings.TEMPLATE_AUTOESCAPE else lambda x:False,
         loader=jinja2.FileSystemLoader(settings.JINJA2_TEMPLATE_DIRS),
         extensions=(
             'django_jinja_extensions.URLExtension',
