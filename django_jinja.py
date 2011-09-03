@@ -21,7 +21,7 @@ from django.template.loader import BaseLoader
 from django.template import TemplateDoesNotExist, Origin
 from django.core import urlresolvers
 from django.conf import settings
-
+from django_jinja_extensions import update_querystring
 
 class Template(jinja2.Template):
     def render(self, context):
@@ -43,7 +43,7 @@ def guess_autoescape(template_name):
     ext = template_name.rsplit('.', 1)[1]
     return ext in ('html', 'htm', 'xml', 'haml')
     
-
+auto_escape = guess_autoescape if settings.TEMPLATE_AUTOESCAPE else lambda x:False
 
 class Loader(BaseLoader):
     """
@@ -55,7 +55,7 @@ class Loader(BaseLoader):
     
     # Set up the jinja env and load any extensions you may have
     env = jinja2.Environment(
-        autoescape=guess_autoescape if settings.TEMPLATE_AUTOESCAPE else lambda x:False,
+        autoescape=auto_escape,
         loader=jinja2.FileSystemLoader(settings.JINJA2_TEMPLATE_DIRS),
         extensions=(
             'django_jinja_extensions.URLExtension',
@@ -63,8 +63,8 @@ class Loader(BaseLoader):
             'django_jinja_extensions.MarkdownExtension',
         )
     )
-    env.template_class = Template
     env.filters['update_querystring'] = update_querystring
+    env.template_class = Template
     # These are available to all templates.
     env.globals['url_for'] = urlresolvers.reverse
     env.globals['MEDIA_URL'] = settings.MEDIA_URL
