@@ -8,7 +8,7 @@ from django.conf import settings
 
 @contextfilter
 def update_querystring(ctx, curr_url, **kwargs):
-        query_dict = ctx['request'].GET.copy() 
+        query_dict = ctx['request'].GET.copy()
         for k, v in kwargs.items():
             query_dict[k] = v
         url = "%s?%s"%(curr_url, query_dict.urlencode())
@@ -231,13 +231,13 @@ class WithExtension(Extension):
         parser.stream.expect('name:as')
         name = parser.stream.expect('name')
         body = parser.parse_statements(['name:endwith'], drop_needle=True)
-        # Use a local variable instead of a macro argument to alias  
+        # Use a local variable instead of a macro argument to alias
         # the expression.  This allows us to nest "with" statements.
         body.insert(0, nodes.Assign(nodes.Name(name.value, 'store'), value))
         return nodes.CallBlock(
                 self.call_method('_render_block'), [], [], body).\
                     set_lineno(lineno)
-        
+
     def _render_block(self, caller=None):
         return caller()
 
@@ -320,7 +320,7 @@ class CacheExtension(Extension):
         from django.core.cache import cache   # delay depending in settings
         from django.utils.http import urlquote
         from django.utils.hashcompat import md5_constructor
-        
+
         try:
             expire_time = int(expire_time)
         except (ValueError, TypeError):
@@ -382,7 +382,7 @@ class CsrfTokenExtension(Extension):
         return Markup(CsrfTokenNode().render({'csrf_token': csrf_token}))
 
 import markdown2
- 
+
 class MarkdownExtension(Extension):
     tags = set(['markdown'])
 
@@ -390,7 +390,7 @@ class MarkdownExtension(Extension):
         super(MarkdownExtension, self).__init__(environment)
         environment.extend(
             markdowner=markdown2.Markdown()
-        )   
+        )
 
     def parse(self, parser):
         lineno = parser.stream.next().lineno
